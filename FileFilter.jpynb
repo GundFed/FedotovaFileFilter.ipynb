@@ -1,0 +1,91 @@
+# File Cleaner
+
+# 50% of the grade
+def clean_file(src_file, dest_file, good_text="", bad_text=""):
+    """
+    Cleans a file by retaining lines with `good_text` but not containing `bad_text`.
+    :param src_file: Source file to clean.
+    :param dest_file: Destination file to save cleaned content.
+    :param good_text: Text that must be present in the line.
+    :param bad_text: Text that must not be present in the line.
+    """
+    try:
+        with open(src_file, 'r') as src:
+            lines = src.readlines()
+        
+        cleaned_lines = [
+            line for line in lines 
+            if good_text in line and bad_text not in line
+        ]
+        
+        with open(dest_file, 'w') as dest:
+            dest.writelines(cleaned_lines)
+        
+        print(f"Cleaned file {src_file} and saved onto {dest_file}")
+    except Exception as e:
+        print(f"Error processing file: {e}")
+
+# 80% of the grade
+def clean_file_many(src_file, dest_file, good_texts=(), bad_texts=()):
+    """
+    Cleans a file by retaining lines containing any `good_texts` and not containing any `bad_texts`.
+    :param src_file: Source file to clean.
+    :param dest_file: Destination file to save cleaned content.
+    :param good_texts: List of text patterns that must be present in the line.
+    :param bad_texts: List of text patterns that must not be present in the line.
+    """
+    try:
+        with open(src_file, 'r') as src:
+            lines = src.readlines()
+        
+        cleaned_lines = [
+            line for line in lines
+            if any(good_text in line for good_text in good_texts) and 
+               not any(bad_text in line for bad_text in bad_texts)
+        ]
+        
+        with open(dest_file, 'w') as dest:
+            dest.writelines(cleaned_lines)
+        
+        print(f"Cleaned file {src_file} and saved onto {dest_file}")
+    except Exception as e:
+        print(f"Error processing file: {e}")
+
+# 100% of the grade
+def clean_folder_many_texts(src_folder, dest_folder, src_postfix=".txt", dest_postfix="_cleaned.txt", good_texts=(), bad_texts=()):
+    """
+    Cleans all files in a folder, retaining lines containing `good_texts` but not containing `bad_texts`.
+    :param src_folder: Source folder containing files to clean.
+    :param dest_folder: Destination folder to save cleaned files.
+    :param src_postfix: Postfix of source files to clean (e.g., `.txt`).
+    :param dest_postfix: Postfix to add to cleaned files (e.g., `_cleaned.txt`).
+    :param good_texts: List of text patterns that must be present in lines.
+    :param bad_texts: List of text patterns that must not be present in lines.
+    """
+    import os
+    
+    try:
+        # Create the destination folder if it doesn't exist
+        if not os.path.exists(dest_folder):
+            os.makedirs(dest_folder)
+        
+        for filename in os.listdir(src_folder):
+            if filename.endswith(src_postfix):
+                src_file = os.path.join(src_folder, filename)
+                dest_file = os.path.join(dest_folder, f"{os.path.splitext(filename)[0]}{dest_postfix}")
+                
+                with open(src_file, 'r') as src:
+                    lines = src.readlines()
+                
+                cleaned_lines = [
+                    line for line in lines
+                    if any(good_text in line for good_text in good_texts) and 
+                       not any(bad_text in line for bad_text in bad_texts)
+                ]
+                
+                with open(dest_file, 'w') as dest:
+                    dest.writelines(cleaned_lines)
+        
+        print(f"Cleaned files in {src_folder} and saved onto {dest_folder}")
+    except Exception as e:
+        print(f"Error processing folder: {e}")
